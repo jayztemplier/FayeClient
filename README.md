@@ -3,6 +3,10 @@ FayeClient - iOS & Mac OS X
 
 This project is a copy of the Library made by pcrawfor there: <https://github.com/pcrawfor/FayeObjC>
 
+#### Why?
+For one of my project, I needed an objective-C faye client. The best I've been able to find is the one created by pcrawfor which is not maintained anymore. 
+I decided to copy the project and update the web socket library in order to user `Socket Rockect`, maintainted by Square, `JSONKit`, and make the library using `ARC by default`.
+
 
 ## Installation
 ----
