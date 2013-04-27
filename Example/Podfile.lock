@@ -1,0 +1,14 @@
+
+PODS:
+- JSONKit (1.5pre)
+- SocketRocket (0.2.0)
+
+DEPENDENCIES:
+- JSONKit
+- SocketRocket
+
+SPEC CHECKSUMS:
+  JSONKit: 409734ab3407fce90ef7eaa95d7168f38d9a6601
+  SocketRocket: bca43a94bd9aac3a629df42c06843402399ee67b
+
+COCOAPODS: 0.16.4
