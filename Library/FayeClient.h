@@ -30,14 +30,16 @@
 #import <UIKit/UIKit.h>
 #endif
 
-#import "JSONKit.h"
 #import <SocketRocket/SRWebSocket.h>
+
 enum _fayeStates {
   kWebSocketDisconnected,
   kWebSocketConnected,
   kFayeDisconnected,
   kFayeConnected  
 } fayeStates;
+
+typedef void(^FayeClientMessageHandler)(NSDictionary *);
 
 // Bayeux protocol channels
 #define HANDSHAKE_CHANNEL @"/meta/handshake"
@@ -48,12 +50,18 @@ enum _fayeStates {
 
 @protocol FayeClientDelegate <NSObject>
 
-- (void)messageReceived:(NSDictionary *)messageDict;
+- (void)messageReceived:(NSDictionary *)messageDict channel:(NSString *)channel;
 - (void)connectedToServer;
 - (void)disconnectedFromServer;
-@optional
+- (void)connectionFailed;
+- (void)didSubscribeToChannel:(NSString *)channel;
+- (void)didUnsubscribeFromChannel:(NSString *)channel;
 - (void)subscriptionFailedWithError:(NSString *)error;
-- (void)subscribedToChannel:(NSString *)channel;
+- (void)fayeClientError:(NSError *)error;
+
+// Delegation implementation of Faye extensions
+- (void)fayeClientWillReceiveMessage:(NSDictionary *)messageDict withCallback:(FayeClientMessageHandler)callback;
+- (void)fayeClientWillSendMessage:(NSDictionary *)messageDict withCallback:(FayeClientMessageHandler)callback;
 
 @end
 
@@ -62,26 +70,32 @@ enum _fayeStates {
   NSString *fayeURLString;
   SRWebSocket* webSocket;
   NSString *fayeClientId;
-  BOOL webSocketConnected;  
-  NSString *activeSubChannel;
-  id <FayeClientDelegate> delegate;  
+  BOOL webSocketConnected;
+  __unsafe_unretained id <FayeClientDelegate> delegate;  
   @private
   BOOL fayeConnected;  
   NSDictionary *connectionExtension;
+  BOOL connectionInitiated;
+  uint32_t messageNumber;
 }
 
 @property (strong) NSString *fayeURLString;
 @property (strong) SRWebSocket* webSocket;
 @property (strong) NSString *fayeClientId;
 @property (assign) BOOL webSocketConnected;
+@property (assign) BOOL connectionInitiated;
 @property (strong) NSString *activeSubChannel;
-@property (weak) id <FayeClientDelegate> delegate;
+@property (assign, unsafe_unretained) id <FayeClientDelegate> delegate;
 
 - (id) initWithURLString:(NSString *)aFayeURLString channel:(NSString *)channel;
 - (void) connectToServer;
 - (void) connectToServerWithExt:(NSDictionary *)extension;
 - (void) disconnectFromServer;
-- (void) sendMessage:(NSDictionary *)messageDict;
-- (void) sendMessage:(NSDictionary *)messageDict withExt:(NSDictionary *)extension;
+- (void) sendMessage:(NSDictionary *)messageDict onChannel:(NSString *)channel;
+- (void) sendMessage:(NSDictionary *)messageDict onChannel:(NSString *)channel withExt:(NSDictionary *)extension;
+- (void) subscribeToChannel:(NSString *)channel;
+- (void) unsubscribeFromChannel:(NSString *)channel;
+- (BOOL) isSubscribedToChannel:(NSString *)channel;
+- (void) subscribeQueuedSubscriptions;
 
 @end

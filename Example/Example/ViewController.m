@@ -37,15 +37,10 @@
 #pragma mark - Actions
 - (IBAction)sendMessagePressed:(id)sender
 {
-    [_client sendMessage:@{@"jayztemplier" : @"Hello World!"}];
+    [_client sendMessage:@{@"jayztemplier" : @"Hello World!"} onChannel:@"/room1"];
 }
 
 #pragma mark - Faye Client Delegate
-- (void)messageReceived:(NSDictionary *)messageDict
-{
-    NSLog(@"Message received : %@", messageDict);
-}
-
 - (void)connectedToServer
 {
     NSLog(@"Connected to server");
@@ -66,5 +61,25 @@
     NSLog(@"Subscribed to channel: %@", channel);
 }
 
+- (void)messageReceived:(NSDictionary *)messageDict channel:(NSString *)channel
+{
+    NSLog(@"messageReceived %@ channel %@",messageDict, channel);
+}
+- (void)connectionFailed
+{
+    NSLog(@"Connection Failed");
+}
+- (void)didSubscribeToChannel:(NSString *)channel
+{
+    NSLog(@"didSubscribeToChannel %@", channel);
+}
+- (void)didUnsubscribeFromChannel:(NSString *)channel
+{
+    NSLog(@"didUnsubscribeFromChannel %@", channel);
+}
+- (void)fayeClientError:(NSError *)error
+{
+    NSLog(@"fayeClientError %@", error);
+}
 
 @end
