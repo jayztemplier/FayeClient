@@ -9,8 +9,7 @@ Pod::Spec.new do |s|
   s.license      = { :type => 'MIT', :file => "LICENSE" }
   s.authors      = 'Paul Crawford', 'Jeremy Templier'
   s.source       = { :git => "https://github.com/mikker/FayeClient.git", :commit => 'aeccbba4293a3e51996d998156050ddfa41fdca2' }
-  s.source_files  = 'Library/*'
+  s.source_files  = 'Library/*,LICENSE'
   s.requires_arc = true
-  s.dependency 'JSONKit' #, '~> 1.4'
   s.dependency 'SocketRocket'
 end
